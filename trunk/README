@@ -1,0 +1,17 @@
+nsi.multimedia
+NSILibrary
+
+
+  Created by Information Systems Research Group - NSI (Núcleo de Pesquisa em Sistemas de Informação)
+  Fluminense Federal Institute - IFF (Instituto Federal Fluminense) http://www.iff.edu.br
+  Campos dos Goytacazes, Rio de Janeiro, Brazil
+
+
+DEPENDENCIES
+
+  GStreamer 0.10
+  GNonLin
+
+License
+
+  GNU GPL ?
