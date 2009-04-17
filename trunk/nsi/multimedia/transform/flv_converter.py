@@ -50,7 +50,7 @@ class FlvConverter:
         logging.basicConfig(level=logging.INFO, 
                             format='%(asctime)s [%(module)s] %(message)s',
                             stream=log_stream)
-        self._create_pipeline(source, target if target is not None else replace_file_extension(source, "flv"))
+        self._create_pipeline(source, target or replace_file_extension(source, "flv"))
         self._configure_message_handling()
     
     def _create_pipeline(self, source, target):

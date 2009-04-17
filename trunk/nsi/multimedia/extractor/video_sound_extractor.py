@@ -34,7 +34,7 @@ import gtk
 
 from nsi.multimedia.utils import replace_file_extension
 
-class VideoSoundExtractor:    
+class VideoSoundExtractor:
     '''
     Extracts sound from a video file, storing it on a mp3 audio file
     '''
@@ -48,10 +48,11 @@ class VideoSoundExtractor:
                             format='%(asctime)s %(levelname)-8s %(message)s',
                             stream=log_stream)
         self.source = source
-        self.target = target if target is not None else replace_file_extension(source, 'mp3')
+        self.target = target or replace_file_extension(source, 'mp3')
         self._create_pipeline()
         self._configure_message_handling()
-        
+
+
     def _create_pipeline(self):
         '''
         Creates a pipeline in the form:
