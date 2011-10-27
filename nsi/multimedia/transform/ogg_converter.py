@@ -27,13 +27,10 @@
 #
 ##############################################################################
 
-import pygst
-pygst.require('0.10')
-import gst
-import gtk
 import time
 import logging
 import sys
+from subprocess import Popen
 
 from nsi.multimedia.utils import replace_file_extension
 
@@ -50,47 +47,19 @@ class OggConverter:
         logging.basicConfig(level=logging.INFO, 
                             format='%(asctime)s [%(module)s] %(message)s',
                             stream=log_stream)
-        self._create_pipeline(source, target or replace_file_extension(source, "ogm"))
-        self._configure_message_handling()
-    
-    def _create_pipeline(self, source, target):
-        '''
-        Creates a pipeline in the form:
-                              |--> queue --> theoraenc ------------------->|
-        filesrc --> decodebin |                                            | oggmux --> filesink
-                              |--> queue --> audioconvert --> vorbisenc -->|
-        '''
-        self.pipeline = gst.parse_launch(
-            ("filesrc location=%s ! decodebin name=d " + 
-                 "d.! queue ! theoraenc ! mux. " + 
-                 "d.! queue ! audioconvert ! vorbisenc ! mux. " + 
-             "oggmux name=mux ! filesink location=%s") % 
-             (source, target))
-        
-    def _configure_message_handling(self):
-        '''
-        Registers callback for receiving bus messages
-        ''' 
-        bus = self.pipeline.get_bus()
-        bus.add_signal_watch()
-        bus.connect('message', self._on_message)
+        self.source = source
+        self.target = target
+        self.log_stream = log_stream
+
     
     def run(self):
         '''
         Runs the conversion
         '''
-        self.pipeline.set_state(gst.STATE_PLAYING)
-        logging.info('Conversion started...')
-        gtk.main()
-    
-    def _on_message(self, bus, message):
-        '''
-        Callback for message processing
-        '''
-        if message.type == gst.MESSAGE_EOS:
-            self.pipeline.set_state(gst.STATE_NULL)
-            logging.info('Terminated')
-            gtk.main_quit()
+        command = "ffmpeg -r 60 -i %s -vcodec libtheora -acodec libvorbis  %s"%(self.source, self.target or replace_file_extension(self.source, "ogv"))
+        process = Popen(command.split(),stdout=self.log_stream)
+        output, error = process.communicate()
+        print error
             
 #usage example
 if __name__ == '__main__':

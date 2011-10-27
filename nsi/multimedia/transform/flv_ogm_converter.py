@@ -26,13 +26,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-
-import pygst
-pygst.require('0.10')
-import gst
-import gtk
 import logging
 import sys
+from subprocess import Popen
+from nsi.multimedia.tranform.ogg_convert import OggConvert 
+from nsi.multimedia.tranform.flv_convert import FlvConvert 
+
 
 class FlvOgmConverter(object):
     '''
@@ -48,63 +47,17 @@ class FlvOgmConverter(object):
         logging.basicConfig(level=logging.INFO, 
                             format='%(asctime)s [%(module)s] %(message)s',
                             stream=log_stream)
-        self._create_pipeline(source, target or
-            {'ogm': self._replace_file_extension(source, "convert.ogm"), 
-             'flv': self._replace_file_extension(source, "convert.flv")})
-        self._configure_message_handling()
-        
-    def _create_pipeline(self, source, target):
-        '''
-        Create a pipeline in the form:
-                                                 |--> queue --> theoraenc ------------------------------>|
-                              |--> queue --> tee |                                                       | oggmux --> filesink
-                              |                  |--> queue --> ffenc_flv -------------------     ------>|
-        filesrc --> decodebin |                                                              |   |
-                              |                  |--> queue --> audioconvert --> vorbisenc --|---        |
-                              |--> queue --> tee |                                           ------------| flvmux --> filesink
-                                                 |--> queue --> audioconvert --> lame ------------------>|
-        '''
-        self.pipeline = gst.parse_launch(
-            ('''filesrc location=%s ! decodebin name=d   
-                   d. ! queue ! tee name=video 
-                     video. ! queue ! theoraenc ! omux. 
-                     video. ! queue ! ffenc_flv ! fmux.  
-                   d. ! queue ! tee name=audio 
-                     audio. ! queue ! audioconvert ! vorbisenc ! omux. 
-                     audio. ! queue ! audioconvert ! lame ! fmux. 
-                   flvmux name=fmux ! filesink location=%s 
-                   oggmux name=omux ! filesink location=%s''') % 
-            (source, target["flv"], target["ogm"])
-        )
-        
-    def _configure_message_handling(self):
-        '''
-        Registers callback for receiving bus messages
-        ''' 
-        bus = self.pipeline.get_bus()
-        bus.add_signal_watch()
-        bus.connect('message', self._on_message)
-        
-    def _replace_file_extension(self, file_name, new_extension):
-        return file_name[:file_name.rindex('.')] + "." + new_extension
-    
+        self.source = source
+        self.target = target
+        sel.log_stream = log_stream
+
     def run(self):
         '''
         Runs the conversion
         '''
-        self.pipeline.set_state(gst.STATE_PLAYING)
-        logging.info('Conversion started...')
-        gtk.main()
-    
-    def _on_message(self, bus, message):
-        '''
-        Callback for message processing
-        '''
-        if message.type == gst.MESSAGE_EOS:
-            self.pipeline.set_state(gst.STATE_NULL)
-            logging.info('Terminated')
-            gtk.main_quit()
-            
-            
+        OggConvert(self.source, self.target, self.log_stream).run()
+        FlvConvert(self.source, self.target, self.log_stream).run()
+
+
 if __name__ == '__main__':
     FlvOgmConverter(source=sys.argv[1]).run()
