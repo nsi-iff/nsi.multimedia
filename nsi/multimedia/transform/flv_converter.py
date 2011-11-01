@@ -39,22 +39,6 @@ class FlvConverter(BaseConverter):
     '''
     Converts a video input file to FLV. This format is accepted by the FlowPlayer web player.
     '''
-<<<<<<< Updated upstream
-=======
-    
-    def __init__(self, source, target=None, log_stream=sys.stdout):
-        '''
-        source is the input file (not altered)
-        target is the output file (created or overriden)
-        '''
-        self.source = source
-        self.target = target
-        self.log_stream = log_stream
-        logging.basicConfig(level=logging.INFO, 
-                            format='%(asctime)s [%(module)s] %(message)s',
-                            stream=log_stream)
-
->>>>>>> Stashed changes
 
     def run(self):
         '''

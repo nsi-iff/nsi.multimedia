@@ -48,11 +48,6 @@ class OggConverter(BaseConverter):
         process = Popen(command.split(),stdout=self.log_stream)
         output, error = process.communicate()
         print error
-<<<<<<< Updated upstream
-
-=======
-        return output, error
->>>>>>> Stashed changes
 
 #usage example
 if __name__ == '__main__':
