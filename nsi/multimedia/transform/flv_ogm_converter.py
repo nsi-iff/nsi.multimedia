@@ -1,8 +1,8 @@
 ##############################################################################
 #
-# Copyright (c) 2009 ISrg (NSI, IFF, BRAZIL) and Contributors. 
+# Copyright (c) 2009 ISrg (NSI, IFF, BRAZIL) and Contributors.
 #                                                     All Rights Reserved.
-#                     Rodrigo S. Manhaes <rmanhaes@gmail.com> 
+#                     Rodrigo S. Manhaes <rmanhaes@gmail.com>
 #
 # WARNING: This program as such is intended to be used by professional
 # programmers who take the whole responsability of assessing all potential
@@ -29,34 +29,23 @@
 import logging
 import sys
 from subprocess import Popen
-from nsi.multimedia.tranform.ogg_convert import OggConvert 
-from nsi.multimedia.tranform.flv_convert import FlvConvert 
+from nsi.multimedia.transform.base_converter import BaseConverter
+from nsi.multimedia.transform.ogg_converter import OggConverter
+from nsi.multimedia.transform.flv_converter import FlvConverter
 
 
-class FlvOgmConverter(object):
+class FlvOgmConverter(BaseConverter):
     '''
     Converts a given video file to OGM and FLV. OGM is needed for GNonLin manipulation
     and FLV is the format accepted by FlowPlayer.
     '''
-    
-    def __init__(self, source, target=None, log_stream=sys.stdout):
-        '''
-        source is the input file (not altered)
-        target is a dictionary with the output file names (at "ogm" and "flv" keys)
-        '''
-        logging.basicConfig(level=logging.INFO, 
-                            format='%(asctime)s [%(module)s] %(message)s',
-                            stream=log_stream)
-        self.source = source
-        self.target = target
-        sel.log_stream = log_stream
 
     def run(self):
         '''
         Runs the conversion
         '''
-        OggConvert(self.source, self.target, self.log_stream).run()
-        FlvConvert(self.source, self.target, self.log_stream).run()
+        OggConverter(self.source, self.target, self.log_stream).run()
+        FlvConverter(self.source, self.target, self.log_stream).run()
 
 
 if __name__ == '__main__':
