@@ -8,7 +8,7 @@ from nsi.multimedia.transform.ogg_converter import OggConverter
 class TestConvertVideoFormat(unittest.TestCase):
 
     def setUp(self):
-        self.input_file = "inputs/cachorros.mpg"
+        self.input_file = "inputs/parkour.flv"
         self.output_flv = "output/test.flv"
         self.output_ogv = "output/test.ogv"
 
