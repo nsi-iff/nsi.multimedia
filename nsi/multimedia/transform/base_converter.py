@@ -29,6 +29,9 @@
 
 import logging
 import sys
+import re
+
+from subprocess import Popen, PIPE, STDOUT
 
 
 class BaseConverter(object):
@@ -36,17 +39,15 @@ class BaseConverter(object):
     Convert something to another thing. Just a metaclass.
     '''
 
-    def __init__(self, source, target=None, log_stream=sys.stdout):
+    def __init__(self, source, target=None, stdout=None, stderr=PIPE):
         '''
         source is the input file (not altered)
         target is the output file (created or overriden)
         '''
         self.source = source
         self.target = target
-        self.log_stream = log_stream
-        logging.basicConfig(level=logging.INFO,
-                            format='%(asctime)s [%(module)s] %(message)s',
-                            stream=log_stream)
+        self.stdout = stdout
+        self.stderr = stderr
 
 
     def run(self):
@@ -54,3 +55,10 @@ class BaseConverter(object):
         Runs the conversion
         '''
         pass
+
+    def get_duration(self, file_):
+        result = Popen(["ffprobe", file_],
+            stdout=PIPE, stderr=STDOUT)
+        metadata = [x for x in result.stdout.readlines() if 'Duration' in x] 
+        matcher = re.search(r': (\d\d:\d\d:\d\d.\d\d),', metadata[0])
+        return matcher.groups()[0]
