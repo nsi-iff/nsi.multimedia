@@ -45,10 +45,7 @@ class FlvConverter(BaseConverter):
         Runs the conversion
         '''
         command = "ffmpeg -i %s -f flv -b 200000 %s"%(self.source, self.target or replace_file_extension(self.source, "flv"))
-        process = Popen(command.split(), stdout=self.log_stream)
-        output, error = process.communicate()
-        print error
-        return output, error
+        process = Popen(command.split())
 
 
 #usage example

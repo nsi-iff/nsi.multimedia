@@ -29,7 +29,6 @@
 
 import logging
 import sys
-import re
 
 from subprocess import Popen, PIPE, STDOUT
 
@@ -56,9 +55,3 @@ class BaseConverter(object):
         '''
         pass
 
-    def get_duration(self, file_):
-        result = Popen(["ffprobe", file_],
-            stdout=PIPE, stderr=STDOUT)
-        metadata = [x for x in result.stdout.readlines() if 'Duration' in x] 
-        matcher = re.search(r': (\d\d:\d\d:\d\d.\d\d),', metadata[0])
-        return matcher.groups()[0]

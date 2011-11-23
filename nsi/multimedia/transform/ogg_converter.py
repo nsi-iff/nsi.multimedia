@@ -46,13 +46,7 @@ class OggConverter(BaseConverter):
         '''
         out_file = self.target or replace_file_extension(self.source, "ogv")
         command = "ffmpeg -i %s -vcodec libtheora -acodec libvorbis  %s"%(self.source, out_file )
-        process = Popen(command.split(), stdout=self.stdout, stderr=self.stderr)
-        output, error = process.communicate()
-        return output, error
-
-
-
-
+        process = Popen(command.split())
 
 #usage example
 if __name__ == '__main__':
